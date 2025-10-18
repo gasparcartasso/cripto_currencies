@@ -1,0 +1,18 @@
+name: Run API Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+      - name: Install dependencies
+        run: |
+            pip install uv
+            uv sync
+
+      - name: Run tests
+        run: uv run git_actions_test
