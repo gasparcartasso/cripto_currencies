@@ -15,4 +15,4 @@ jobs:
             uv sync
 
       - name: Run tests
-        run: uv run git_actions_test
+        run: uv run git_actions_test.py
