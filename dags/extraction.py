@@ -8,8 +8,8 @@ def hello_world():
 
 dag = DAG(dag_id="hello_airflow",
          start_date=datetime(2023, 1, 1),
-         schedule_interval="@daily",
-         catchup=False)
+         schedule="@daily",
+         catchup=True)
 
 task = PythonOperator(
         task_id="say_hello",
