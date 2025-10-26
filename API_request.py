@@ -74,9 +74,9 @@ def get_avg_52w_rolling(history):
 
 def get_min_52w_rolling(history):
     """
-    This function gets a 52 week rolling avg of the currency
+    This function gets a 52 week rolling min of the currency
     Arg (pd.DataFrame): history to analyse
-    Return (pd.DataFrame): avg by date of each cripto currency
+    Return (pd.DataFrame): min by date of each cripto currency
     """
     currencies = history['cripto'].unique()
     price_min=pd.DataFrame()
