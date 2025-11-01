@@ -1,6 +1,6 @@
 from unittest.mock import patch
 import pandas as pd
-from API_request import get_bitcoin_price_2decimals_usd, get_max_52w_rolling
+from dags.API_request import get_bitcoin_price_2decimals_usd, get_max_52w_rolling
 
 @patch("API_request.requests.get")
 def test_get_bitcoin_price(mock_get):
