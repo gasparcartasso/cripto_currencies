@@ -36,10 +36,12 @@ def get_prices(execution_date):
     Gets the prices of the relevant cripto currencies of a certain date and returns their values.
     Returns (pd.DataFrame)
     """
+    print(execution_date)
     execution_date = datetime.strptime(execution_date, "%Y-%m-%d")
     date = execution_date.strftime("%d-%m-%Y")
-    with open('./currencies_to_extract.json','r') as f:
-        currencies=json.load(f)['currencies']
+    #with open('currencies_to_extract.json','r') as f:
+    #    currencies=json.load(f)['currencies']
+    currencies=["bitcoin","ethereum","tether","solana"]
     df_price = pd.DataFrame()
     for currency in currencies:
         url = f"https://api.coingecko.com/api/v3/coins/{currency}/history"
