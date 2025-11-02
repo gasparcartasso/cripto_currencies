@@ -38,7 +38,7 @@ def get_prices(execution_date):
     """
     execution_date = datetime.strptime(execution_date, "%Y-%m-%d")
     date = execution_date.strftime("%d-%m-%Y")
-    with open('currencies_to_extract.json','r') as f:
+    with open('./currencies_to_extract.json','r') as f:
         currencies=json.load(f)['currencies']
     df_price = pd.DataFrame()
     for currency in currencies:
