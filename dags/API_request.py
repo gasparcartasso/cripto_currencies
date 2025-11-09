@@ -55,7 +55,7 @@ def get_prices(execution_date):
     df_price['date']=date
     return df_price
 
-def get_max_52w_rolling(history):
+def get_max_4w_rolling(history):
     """
     This function gets a 52 week rolling max of the currency
     Arg (pd.DataFrame): history to analyse
@@ -64,10 +64,10 @@ def get_max_52w_rolling(history):
     currencies = history['cripto'].unique()
     price_max=pd.DataFrame()
     for currency in currencies:
-        price_max = pd.concat([price_max,pd.DataFrame({'usd_max_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=365,min_periods=1).max(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_max = pd.concat([price_max,pd.DataFrame({'usd_max_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).max(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_max
 
-def get_avg_52w_rolling(history):
+def get_avg_4w_rolling(history):
     """
     This function gets a 52 week rolling avg of the currency
     Arg (pd.DataFrame): history to analyse
@@ -76,10 +76,10 @@ def get_avg_52w_rolling(history):
     currencies = history['cripto'].unique()
     price_avg=pd.DataFrame()
     for currency in currencies:
-        price_avg = pd.concat([price_avg,pd.DataFrame({'usd_avg_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=365,min_periods=1).mean(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_avg = pd.concat([price_avg,pd.DataFrame({'usd_avg_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).mean(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_avg
 
-def get_min_52w_rolling(history):
+def get_min_4w_rolling(history):
     """
     This function gets a 52 week rolling min of the currency
     Arg (pd.DataFrame): history to analyse
@@ -88,5 +88,5 @@ def get_min_52w_rolling(history):
     currencies = history['cripto'].unique()
     price_min=pd.DataFrame()
     for currency in currencies:
-        price_min = pd.concat([price_min,pd.DataFrame({'usd_min_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=365,min_periods=1).min(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_min = pd.concat([price_min,pd.DataFrame({'usd_min_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).min(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_min
