@@ -9,9 +9,12 @@ dependencies = [
     "dotenv>=0.9.9",
     "ipykernel>=7.0.1",
     "pandas>=2.3.3",
+    "pandas-redshift>=2.0.5",
     "pip>=25.2",
     "psycopg2-binary>=2.9.11",
     "pytest>=8.4.2",
+    "redshift-connector>=2.1.9",
     "requests>=2.32.5",
     "sqlalchemy>=1.4.54",
+    "sqlalchemy-redshift>=0.8.14",
 ]
