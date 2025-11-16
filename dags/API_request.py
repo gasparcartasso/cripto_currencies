@@ -4,6 +4,16 @@ import datetime as dt
 import pandas as pd
 import json
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine, text
+# Resolve the parent directory of this .py file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.abspath(os.path.join(BASE_DIR, os.pardir))
+
+# Load the .env file from the parent directory
+dotenv_path = os.path.join(PARENT_DIR, ".env")
+load_dotenv(dotenv_path=dotenv_path)
 
 def get_bitcoin_price():
     date = dt.date.today().strftime("%d-%m-%Y")
@@ -33,7 +43,7 @@ def get_bitcoin_price_2decimals_usd():
 
 def get_prices(execution_date):
     """
-    Gets the prices of the relevant cripto currencies of a certain date and returns their values.
+    Gets the prices of the relevant cripto currencies of a certain date and returns their values and function loads the data to redshift
     Returns (pd.DataFrame)
     """
     print(execution_date)
@@ -44,15 +54,35 @@ def get_prices(execution_date):
     currencies=["bitcoin","ethereum","tether","solana"]
     df_price = pd.DataFrame()
     for currency in currencies:
-        url = f"https://api.coingecko.com/api/v3/coins/{currency}/history"
-        params = {
-        "date": f"{date}",  # Format: DD-MM-YYYY
-        "localization": "false"
-        }
-        response = requests.get(url, params=params)
-        data = response.json()
-        df_price = pd.concat([df_price,pd.DataFrame({'usd':data['market_data']['current_price']['usd'],'cripto':[currency]})],ignore_index=True)
+        try:
+            url = f"https://api.coingecko.com/api/v3/coins/{currency}/history"
+            params = {
+            "date": f"{date}",  # Format: DD-MM-YYYY
+            "localization": "false"
+            }
+            response = requests.get(url, params=params)
+            data = response.json()
+            df_price = pd.concat([df_price,pd.DataFrame({'usd':data['market_data']['current_price']['usd'],'cripto':[currency]})],ignore_index=True)
+        except:
+            transformation = {"bitcoin":"BTC","ethereum":"ETH","tether":"XAUT","solana":"SOL"}
+            currency_symbol = transformation[currency]
+            url = f"https://api.freecryptoapi.com/v1/getData?symbol={currency_symbol}"
+            headers = {
+            "accept": "*/*",
+            "Authorization": f"Bearer {os.getenv("API_KEY")}"
+            }
+            response = requests.get(url, headers=headers)
+            data = response.json()
+            df_price = pd.concat([df_price,pd.DataFrame({'usd':data['symbols'][0]['last'],'cripto':[currency]})],ignore_index=True)
     df_price['date']=date
+    engine = create_engine(os.getenv("REDSHIFT"))
+    with engine.connect() as conn:
+        for index, row in df_price.iterrows():
+            conn.execute(
+                text("INSERT INTO DAILY_CRIPTO_PRICES (usd, cripto,date) VALUES (:usd, :cripto,:date)"),
+                {"usd": row.usd, "cripto":row.cripto,'date':row.date}
+                )
+        conn.close()
     return df_price
 
 def get_max_4w_rolling(history):
@@ -90,3 +120,18 @@ def get_min_4w_rolling(history):
     for currency in currencies:
         price_min = pd.concat([price_min,pd.DataFrame({'usd_min_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).min(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_min
+
+def load_data_to_redshift(data):
+    """
+    This function loads the data to redshift
+    Arg (pd.DataFrame): data to load
+    Return: None
+    """
+    engine = create_engine(os.getenv("REDSHIFT"))
+    with engine.connect() as conn:
+        for index, row in data.iterrows():
+            conn.execute(
+                text("INSERT INTO DAILY_CRIPTO_PRICES (usd, cripto,date) VALUES (:usd, :cripto,:date)"),
+                {"usd": row.usd, "cripto":row.cripto,'date':row.date}
+                )
+        conn.close()
