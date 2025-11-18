@@ -21,7 +21,7 @@ def load_fact_table():
     host=os.getenv('REDSHIFT_HOST'),
     port=5439
     )
-    df = pd.read_sql("SELECT * FROM DAILY_CRIPTO_PRICES ;", conn)
+    df = pd.read_sql("SELECT * FROM DAILY_CRIPTO_PRICES where date>= '2025-10-01' ;", conn)
     df.drop_duplicates(subset=['cripto','date'],inplace=True)
     data = get_min_4w_rolling(df).merge(get_avg_4w_rolling(df),on=['cripto','date']).merge(get_max_4w_rolling(df),on=['cripto','date']).merge(df[['cripto','date','usd']],on=['cripto','date'])
     engine = create_engine(os.getenv("REDSHIFT"))
