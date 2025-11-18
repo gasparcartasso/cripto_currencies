@@ -5,11 +5,17 @@ Este archivo describe las características principales del trabajo, los pasos ne
 ## Motivacion y resumen del proyecto
 
 Trackear monedas cripto para tomar decisiones de compra/venta.
+
 Para ello se consultan dos APIs, una gratis pero poco estable y con limites de extraccion, y otra en caso de que falle la primera, paga.
+
 La estructura de las base de datos es la primera en la cual se extrae la informacion y se carga con una minima transformacion a una base de datos. Luego se extrae la informacion de esa tabla base y se hacen transformaciones y agregaciones para tener una tabla mas pulida en la cual se puede consultar para generar dashboads.
+
 Para almacenar los datos se uso un Redshift, y las dos tablas son DAILY_CRIPTO_PRICES (tabla en donde se hace la primer carga de datos) y FACT_CRIPTO_PRICES tabla en donde se hace la segunda carga de datos con mas informacion.
+
 El proyecto tiene dos dags uno llamado 'extraction' para extraccion y guardado de datos semi-crudos y otro 'facttable' para la consulta, transformacion y guardado de datos transformados.
+
 La extraccion de los datos es diaria de 4 cripto monedas, dado a que se pueden consultar datos historicos en la API al lanzar el airflow, estos se agregan al final de la base de datos y no son re escritos, sino que cuando se hace la base de datos FACT se filtran las ultimas entradas y se re escriben los datos en esa tabla FACT que es borrada y cargada de cero cada vez que este dag es lanzado.
+
 Datos historicos fueron cargados a travez de CSVs una sola vez.
 
 ---
