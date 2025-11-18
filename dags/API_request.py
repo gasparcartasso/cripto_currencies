@@ -94,7 +94,7 @@ def get_max_4w_rolling(history):
     currencies = history['cripto'].unique()
     price_max=pd.DataFrame()
     for currency in currencies:
-        price_max = pd.concat([price_max,pd.DataFrame({'usd_max_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).max(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_max = pd.concat([price_max,pd.DataFrame({'max_4week':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).max(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_max
 
 def get_avg_4w_rolling(history):
@@ -106,7 +106,7 @@ def get_avg_4w_rolling(history):
     currencies = history['cripto'].unique()
     price_avg=pd.DataFrame()
     for currency in currencies:
-        price_avg = pd.concat([price_avg,pd.DataFrame({'usd_avg_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).mean(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_avg = pd.concat([price_avg,pd.DataFrame({'mean_4week':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).mean(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_avg
 
 def get_min_4w_rolling(history):
@@ -118,7 +118,7 @@ def get_min_4w_rolling(history):
     currencies = history['cripto'].unique()
     price_min=pd.DataFrame()
     for currency in currencies:
-        price_min = pd.concat([price_min,pd.DataFrame({'usd_min_year':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).min(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
+        price_min = pd.concat([price_min,pd.DataFrame({'min_4week':history[history['cripto']==currency].sort_values(by='date',ascending=True)['usd'].rolling(window=28,min_periods=1).min(),'cripto':history[history['cripto']==currency].sort_values(by='date',ascending=True)['cripto'],'date':history[history['cripto']==currency].sort_values(by='date',ascending=True)['date']})],ignore_index=True)
     return price_min
 
 def load_data_to_redshift(data):

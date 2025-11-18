@@ -45,7 +45,7 @@ def get_prices(execution_date):
             response = requests.get(url, headers=headers)
             data = response.json()
             df_price = pd.concat([df_price,pd.DataFrame({'usd':data['symbols'][0]['last'],'cripto':[currency]})],ignore_index=True)
-    df_price['date']=date
+    df_price['date']=execution_date
     engine = create_engine(os.getenv("REDSHIFT"))
     with engine.connect() as conn:
         for index, row in df_price.iterrows():
