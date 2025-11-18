@@ -11,7 +11,7 @@ from sqlalchemy import create_engine, text
 
 def load_fact_table():
     """
-    This function loads the fact table with the relevant data
+    This function loads the fact table with the relevant data every time it is called will drop and recreate the fact table
     Return: None
     """
     conn = psycopg2.connect(
@@ -21,7 +21,22 @@ def load_fact_table():
     host=os.getenv('REDSHIFT_HOST'),
     port=5439
     )
-    df = pd.read_sql("SELECT * FROM DAILY_CRIPTO_PRICES where date>= '2025-10-01' ;", conn)
+    cur = conn.cursor()
+    create_table_sql = """
+    DROP TABLE IF EXISTS FACT_CRIPTO_PRICES;
+
+    CREATE TABLE FACT_CRIPTO_PRICES (
+        usd FLOAT,
+        mean_4week FLOAT,
+        max_4week FLOAT,
+        min_4week FLOAT,
+        cripto VARCHAR(100),
+        date TIMESTAMP
+    );
+    """
+    cur.execute(create_table_sql)
+    conn.commit()
+    df = pd.read_sql("SELECT * FROM DAILY_CRIPTO_PRICES where date>= '2025-09-01' ;", conn)
     df.drop_duplicates(subset=['cripto','date'],inplace=True)
     data = get_min_4w_rolling(df).merge(get_avg_4w_rolling(df),on=['cripto','date']).merge(get_max_4w_rolling(df),on=['cripto','date']).merge(df[['cripto','date','usd']],on=['cripto','date'])
     engine = create_engine(os.getenv("REDSHIFT"))
