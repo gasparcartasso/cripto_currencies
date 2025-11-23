@@ -13,16 +13,29 @@ from sqlalchemy import create_engine, text
 def get_prices(execution_date):
     """
     Gets the prices of the relevant cripto currencies of a certain date and returns their values and function loads the data to redshift
-    Returns (pd.DataFrame)
+
+    Args:
+        execution_date (str): Date of execution. Format: "YYYY-MM-DD".
+
+    Returns:
+        Pd.DataFrame: Prices for that execution date.
+
+    Raises:
+        None.
+
+    Example:
+        >>> calculate_area(2025-10-20)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     load_dotenv()
-    print(os.getenv("API_KEY"))
     print(execution_date)
     execution_date = datetime.strptime(execution_date, "%Y-%m-%d")
     date = execution_date.strftime("%d-%m-%Y")
-    #with open('currencies_to_extract.json','r') as f:
-    #    currencies=json.load(f)['currencies']
-    currencies=["bitcoin","ethereum","tether","solana"]
+    with open('./dags/currencies_to_extract.json','r') as f:
+        currencies=json.load(f)['currencies']
     df_price = pd.DataFrame()
     for currency in currencies:
         try:

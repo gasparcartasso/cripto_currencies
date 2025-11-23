@@ -12,7 +12,15 @@ from sqlalchemy import create_engine, text
 def load_fact_table():
     """
     This function loads the fact table with the relevant data every time it is called will drop and recreate the fact table
-    Return: None
+    
+    Args:
+        None.
+
+    Returns:
+        None.
+
+    Raises:
+        None.
     """
     conn = psycopg2.connect(
     dbname=os.getenv('REDSHIFT_SCHEMA'),

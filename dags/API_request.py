@@ -15,19 +15,6 @@ PARENT_DIR = os.path.abspath(os.path.join(BASE_DIR, os.pardir))
 dotenv_path = os.path.join(PARENT_DIR, ".env")
 load_dotenv(dotenv_path=dotenv_path)
 
-def get_bitcoin_price():
-    date = dt.date.today().strftime("%d-%m-%Y")
-    url = "https://api.coingecko.com/api/v3/coins/bitcoin/history"
-    params = {
-        "date": f"{date}",  # Format: DD-MM-YYYY
-        "localization": "false"
-    }
-
-    response = requests.get(url, params=params)
-    data = response.json()
-    df_price = pd.DataFrame([data['market_data']['current_price']])
-    df_price['date']=date
-    return df_price
 #%%
 def get_bitcoin_price_2decimals_usd():
     date = dt.date.today().strftime("%d-%m-%Y")
@@ -44,14 +31,28 @@ def get_bitcoin_price_2decimals_usd():
 def get_prices(execution_date):
     """
     Gets the prices of the relevant cripto currencies of a certain date and returns their values and function loads the data to redshift
-    Returns (pd.DataFrame)
+
+    Args:
+        execution_date (str): Date of execution. Format: "YYYY-MM-DD".
+
+    Returns:
+        Pd.DataFrame: Prices for that execution date.
+
+    Raises:
+        None.
+
+    Example:
+        >>> get_prices(2025-10-20)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     print(execution_date)
     execution_date = datetime.strptime(execution_date, "%Y-%m-%d")
     date = execution_date.strftime("%d-%m-%Y")
-    #with open('currencies_to_extract.json','r') as f:
-    #    currencies=json.load(f)['currencies']
-    currencies=["bitcoin","ethereum","tether","solana"]
+    with open('currencies_to_extract.json','r') as f:
+        currencies=json.load(f)['currencies']
     df_price = pd.DataFrame()
     for currency in currencies:
         try:
@@ -88,8 +89,22 @@ def get_prices(execution_date):
 def get_max_4w_rolling(history):
     """
     This function gets a 52 week rolling max of the currency
-    Arg (pd.DataFrame): history to analyse
-    Return (pd.DataFrame): max by date of each cripto currency
+
+    Args:
+        history (str): max by date of each cripto currency.
+
+    Returns:
+        pd.DataFrame: max by date of each cripto currency.
+
+    Raises:
+        None.
+
+    Example:
+        >>> get_max_4w_rolling(history)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     currencies = history['cripto'].unique()
     price_max=pd.DataFrame()
@@ -99,9 +114,23 @@ def get_max_4w_rolling(history):
 
 def get_avg_4w_rolling(history):
     """
-    This function gets a 52 week rolling avg of the currency
-    Arg (pd.DataFrame): history to analyse
-    Return (pd.DataFrame): avg by date of each cripto currency
+    This function gets a 52 week rolling mean of the currency
+
+    Args:
+        history (str): mean by date of each cripto currency.
+
+    Returns:
+        pd.DataFrame: mean by date of each cripto currency.
+
+    Raises:
+        None.
+
+    Example:
+        >>> get_mean_4w_rolling(history)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     currencies = history['cripto'].unique()
     price_avg=pd.DataFrame()
@@ -112,8 +141,22 @@ def get_avg_4w_rolling(history):
 def get_min_4w_rolling(history):
     """
     This function gets a 52 week rolling min of the currency
-    Arg (pd.DataFrame): history to analyse
-    Return (pd.DataFrame): min by date of each cripto currency
+
+    Args:
+        history (str): min by date of each cripto currency.
+
+    Returns:
+        pd.DataFrame: min by date of each cripto currency.
+
+    Raises:
+        None.
+
+    Example:
+        >>> get_min_4w_rolling(history)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     currencies = history['cripto'].unique()
     price_min=pd.DataFrame()
@@ -124,8 +167,15 @@ def get_min_4w_rolling(history):
 def load_data_to_redshift(data):
     """
     This function loads the data to redshift
-    Arg (pd.DataFrame): data to load
-    Return: None
+
+    Args:
+        data (str): data to load.
+
+    Returns:
+        None.
+
+    Raises:
+        None.
     """
     engine = create_engine(os.getenv("REDSHIFT"))
     with engine.connect() as conn:
