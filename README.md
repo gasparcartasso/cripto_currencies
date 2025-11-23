@@ -31,14 +31,10 @@ Datos historicos fueron cargados a travez de CSVs una sola vez.
     ```bash
     docker-compose up --build
     ```
-3. **Levantar los servicios con Docker Compose**
-    ```bash
-    docker-compose up -d
-    ```
-4. **Acceder a la aplicación**
+3. **Acceder a la aplicación**
     http://localhost:8080
-
-
+4. **Password y User**
+    'airflow'
 ## Estructura del repositorio
 
 docker-compose.yaml → Define los servicios, redes y volúmenes del proyecto.
