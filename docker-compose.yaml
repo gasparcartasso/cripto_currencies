@@ -121,7 +121,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./dags/.env
+      - .env
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -138,7 +138,7 @@ services:
     <<: *airflow-common
     command: scheduler
     env_file:
-      - ./dags/.env
+      - .env
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
       interval: 30s
@@ -155,7 +155,7 @@ services:
     <<: *airflow-common
     command: celery worker
     env_file:
-      - ./dags/.env
+      - .env
     healthcheck:
       # yamllint disable rule:line-length
       test:
