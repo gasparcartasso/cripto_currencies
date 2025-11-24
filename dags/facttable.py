@@ -48,14 +48,15 @@ def load_fact_table():
     df.drop_duplicates(subset=['cripto','date'],inplace=True)
     data = get_min_4w_rolling(df).merge(get_avg_4w_rolling(df),on=['cripto','date']).merge(get_max_4w_rolling(df),on=['cripto','date']).merge(df[['cripto','date','usd']],on=['cripto','date'])
     engine = create_engine(os.getenv("REDSHIFT"))
-    for index, row in data.iterrows():
-        with engine.connect() as conn:
+    with engine.connect() as conn:
+        for index, row in data.iterrows():
+        
             conn.execute(
             text("INSERT INTO FACT_CRIPTO_PRICES (usd,mean_4week,max_4week,min_4week,cripto,date) VALUES (:usd,:mean_4week,:max_4week,:min_4week,:cripto,:date)"),
             {"usd": row.usd,"mean_4week":row.mean_4week,'max_4week':row.max_4week,'min_4week':row.min_4week, "cripto":row.cripto,'date':row.date}
             )
-            conn.close()
         print(index)
+    conn.close()
 
 dag = DAG(dag_id="facttable",
          start_date=datetime(2025,10, 20),
