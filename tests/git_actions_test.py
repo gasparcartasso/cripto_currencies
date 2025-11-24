@@ -2,6 +2,10 @@ from unittest.mock import patch
 import pandas as pd
 from dags.API_request import get_bitcoin_price_2decimals_usd, get_max_4w_rolling,load_data_to_redshift
 from unittest.mock import MagicMock
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @patch("API_request.requests.get")
 def test_get_bitcoin_price(mock_get):
