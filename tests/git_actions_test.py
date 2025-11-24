@@ -1,6 +1,6 @@
 from unittest.mock import patch
 import pandas as pd
-from dags.API_request import get_bitcoin_price_2decimals_usd, get_max_4w_rolling,load_data_to_redshift
+from API_request import get_bitcoin_price_2decimals_usd, get_max_4w_rolling,load_data_to_redshift
 from unittest.mock import MagicMock
 
 @patch("API_request.requests.get")
