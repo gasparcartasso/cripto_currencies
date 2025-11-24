@@ -43,7 +43,23 @@ def get_from_freecrypto(currency: str) -> pd.DataFrame:
 
 def get_prices(execution_date: str) -> pd.DataFrame:
     """
-    Gets the prices of the relevant crypto currencies of a certain date and loads them to Redshift.
+    Gets the prices of the relevant cripto currencies of a certain date and returns their values and function loads the data to redshift
+
+    Args:
+        execution_date (str): Date of execution. Format: "YYYY-MM-DD".
+
+    Returns:
+        Pd.DataFrame: Prices for that execution date.
+
+    Raises:
+        None.
+
+    Example:
+        >>> get_prices(2025-10-20)
+        0  91363.278387   bitcoin 2025-10-20
+        1   3017.748361  ethereum 2025-10-20
+        2      0.999136    tether 2025-10-20
+        3    136.434705    solana 2025-10-20
     """
     load_dotenv()
     print(execution_date)
